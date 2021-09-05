@@ -608,5 +608,23 @@ export const layersStylePropFn = {
     fillColor: propertyValue => {
       return propertyValue;
     }
+  },
+  native_land: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
+  },
+  oceti_sakowin: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
+  },
+  ca_permits: {
+    circleRadiusFn: propertyValue => {
+      return Math.sqrt(propertyValue) * 0.008;
+    },
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
   }
 };

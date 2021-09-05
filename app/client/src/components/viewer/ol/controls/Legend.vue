@@ -21,7 +21,7 @@
           <v-icon>fas fa-layer-group</v-icon>
         </v-btn>
       </template>
-      <span>Layers</span>
+      <span>Legend</span>
     </v-tooltip>
     <v-expansion-panels
       v-model="panel"

@@ -406,7 +406,7 @@ export default {
       {
         icon: 'edit',
         action: 'modifyFeature',
-        tooltip: 'Modify Geometry'
+        tooltip: 'Move Feature'
       },
       {
         icon: 'delete',

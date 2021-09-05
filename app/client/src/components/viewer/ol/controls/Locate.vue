@@ -90,8 +90,8 @@ export default {
           ]);
           if (!source.isEmpty()) {
             map.getView().fit(source.getExtent(), {
-              maxZoom: 6.1,
-              duration: 500
+              maxZoom: 15,
+              duration: 800
             });
             navigator.geolocation.clearWatch(watchId);
           }
