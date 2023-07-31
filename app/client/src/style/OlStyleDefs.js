@@ -593,52 +593,23 @@ const getRadiusValue = (propertyValue, multiplier, smallestRadius, largestRadius
 
 export const layersStylePropFn = {
   default: {
-    iconScaleFn: propertyValue => {
-      return getIconScaleValue(propertyValue);
-    },
-    circleRadiusFn: propertyValue => {
-      return getRadiusValue(propertyValue);
-    },
-    iconUrl: propertyValue => {
-      return propertyValue;
-    }
+    iconScale: propertyValue => getIconScaleValue(propertyValue),
+    radius: propertyValue => getRadiusValue(propertyValue),
+    iconUrl: propertyValue => propertyValue,
   },
-  epa_refineries: {
-    iconScaleFn: propertyValue => {
-      return getIconScaleValue(propertyValue, 0.0000001, 0.2, 1.2);
-    }
-  },
-  coal_global2: {
-    circleRadiusFn: propertyValue => {
-      return getRadiusValue(propertyValue, 0.3, 4, 50);
-    }
+  miss_pipelines_ghg: {
+    iconScaleFn: propertyValue => (propertyValue * 0.0000006)
   },
   miss_tri: {
-    fillColor: propertyValue => {
-      return propertyValue;
-    }
+    fillColor: propertyValue => propertyValue,
   },
   indigenous_territories: {
-    fillColor: propertyValue => {
-      return propertyValue;
-    }
+    fillColor: propertyValue => propertyValue,
   },
   native_land: {
-    fillColor: propertyValue => {
-      return propertyValue;
-    }
+    fillColor: propertyValue => propertyValue,
   },
   oceti_sakowin: {
-    fillColor: propertyValue => {
-      return propertyValue;
-    }
+    fillColor: propertyValue => propertyValue,
   },
-  ca_permits: {
-    circleRadiusFn: propertyValue => {
-      return Math.sqrt(propertyValue) * 0.008;
-    },
-    fillColor: propertyValue => {
-      return propertyValue;
-    }
-  }
 };

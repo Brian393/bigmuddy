@@ -405,18 +405,6 @@ export default {
         this.editPost(this.popup.activeFeature);
       }
     });
-    EventBus.$on('scrollSidePanelTop', () => {
-      const scrollEl = this.$refs.vs;
-      if (scrollEl && scrollEl.scrollTo) {
-        scrollEl.scrollTo(
-          {
-            y: 0,
-          },
-          100,
-          'easeInQuad'
-        );
-      }
-    });
   },
   computed: {
     isFeatureGetInfo() {
