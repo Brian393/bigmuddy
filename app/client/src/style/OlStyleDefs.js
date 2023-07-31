@@ -593,27 +593,52 @@ const getRadiusValue = (propertyValue, multiplier, smallestRadius, largestRadius
 
 export const layersStylePropFn = {
   default: {
-    iconScale: propertyValue => getIconScaleValue(propertyValue),
-    radius: propertyValue => getRadiusValue(propertyValue),
-    iconUrl: propertyValue => propertyValue,
+    iconScaleFn: propertyValue => {
+      return getIconScaleValue(propertyValue);
+    },
+    circleRadiusFn: propertyValue => {
+      return getRadiusValue(propertyValue);
+    },
+    iconUrl: propertyValue => {
+      return propertyValue;
+    }
   },
-  glri_projects: {
-    fillColor: propertyValue => propertyValue,
-    radius: propertyValue => getRadiusValue(propertyValue, 0.012),
+  epa_refineries: {
+    iconScaleFn: propertyValue => {
+      return getIconScaleValue(propertyValue, 0.0000001, 0.2, 1.2);
+    }
   },
-  polygons: {
-    strokeColor: propertyValue => propertyValue,
-    fillColor: propertyValue => propertyValue,
+  coal_global2: {
+    circleRadiusFn: propertyValue => {
+      return getRadiusValue(propertyValue, 0.3, 4, 50);
+    }
   },
-  points: {
-    strokeColor: propertyValue => propertyValue,
-    fillColor: propertyValue => propertyValue,
+  miss_tri: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
   },
-  lines: {
-    strokeColor: propertyValue => propertyValue,
-    strokeWidth: propertyValue => propertyValue,
+  indigenous_territories: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
   },
-  export_rosario: {
-    strokeWidth: propertyValue => propertyValue / 3000000,
+  native_land: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
   },
+  oceti_sakowin: {
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
+  },
+  ca_permits: {
+    circleRadiusFn: propertyValue => {
+      return Math.sqrt(propertyValue) * 0.008;
+    },
+    fillColor: propertyValue => {
+      return propertyValue;
+    }
+  }
 };
