@@ -598,7 +598,7 @@ export const layersStylePropFn = {
     iconUrl: propertyValue => propertyValue,
   },
   miss_pipelines_ghg: {
-    iconScaleFn: propertyValue => (propertyValue * 0.0000006)
+    iconScaleFn: propertyValue => propertyValue * 0.0000006,
   },
   miss_tri: {
     fillColor: propertyValue => propertyValue,
