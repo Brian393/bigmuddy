@@ -28,7 +28,10 @@
     "group": "Group",
     "replaceAndDelete": "Replace and Delete",
     "warning": "Warning",
-    "map": "Map"
+    "map": "Map",
+    "upload": "Upload",
+    "reset": "Reset",
+    "all": "All"
   },
   "tooltip": {
     "zoomIn": "Zoom In",
@@ -42,7 +45,8 @@
     "modifyAttributes": "Modify Attributes",
     "deleteFeature": "Delete Feature",
     "addPost": "Add Post",
-    "changeSpotlight": "press ↑ or ↓ to change spotlight size"
+    "changeSpotlight": "press ↑ or ↓ to change spotlight size",
+    "translateAllFeatures": "Translate All Features"
   },
   "form": {
     "user": {
@@ -124,7 +128,8 @@
       "fileUpload": "File uploaded. Click apply to insert it!",
       "clickToUpload": "Click to upload",
       "addPostSnackbar": "Zoom in close to add your post.",
-      "addPostWarning": "You have unsaved changes! Are you sure you want to continue?"
+      "addPostWarning": "You have unsaved changes! Are you sure you want to continue?",
+      "hardBreak": "Hard Break"
     }
   },
   "dashboard": {
@@ -182,7 +187,14 @@
     "confirmPassword": "Confirm New Password",
     "passwordNotMatch": "Passwords must match",
     "passwordUpdatedSuccess": "Password updated successfully!",
-    "passwordUpdatedFailed": "Cannot update password"
+    "passwordUpdatedFailed": "Cannot update password",
+    "databaseRestore": "Database Restore",
+    "dataRestore": "Data Restore",
+    "geoserverDataDirRestore": "Geoserver Data Directory Restore",
+    "database": "Database",
+    "restore": "Restore",
+    "restoreSuccess": "Restore completed successfully!",
+    "restoreFailed": "Restore failed"
   },
   "$vuetify": {
     "close": "Close",
@@ -223,5 +235,10 @@
       "am": "AM",
       "pm": "PM"
     }
+  },
+  "translation": {
+    "translateLoadingText": "Translating...",
+    "translateAllFeaturesSuccess": "Translated successfully",
+    "translateAllFeaturesError": "Error while translating"
   }
 }

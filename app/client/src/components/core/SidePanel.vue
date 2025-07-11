@@ -53,13 +53,23 @@
                     v-if="popup.showInSidePanel === true && popup.activeFeature && popup.activeFeature.get('caption')"
                     tabindex="0"
                   >
-                    <span v-html="popup.activeFeature.get('caption')"></span>
+                    <span
+                      v-html="
+                        translations && translations[$i18n.locale]
+                          ? translations[$i18n.locale]['caption'] || popup.activeFeature.get('caption')
+                          : popup.activeFeature.get('caption')
+                      "
+                    ></span>
                   </div>
                   <!-- HTML DISPLAY FOR GROUPS AND LAYERS -->
                   <template v-if="!popup.showInSidePanel">
                     <v-row>
                       <span class="ml-2 mt-1 subtitle" v-if="lastSelectedLayer">{{
-                        layers[lastSelectedLayer].get('legendDisplayName') || lastSelectedLayer
+                        layers[lastSelectedLayer].get('legendDisplayName')[$i18n.locale] ||
+                        (typeof layers[lastSelectedLayer].get('legendDisplayName') === 'object' &&
+                          Object.values(layers[lastSelectedLayer].get('legendDisplayName'))[0]) ||
+                        layers[lastSelectedLayer].get('legendDisplayName') ||
+                        lastSelectedLayer
                       }}</span>
                       <v-spacer></v-spacer>
                       <!-- EDIT SIDEBAR TEXT BUTTON -->
@@ -92,7 +102,7 @@
                     <!-- <p v-html="visibleGroup.sidePanel.bodyText1"></p>
                 <p v-html="visibleGroup.sidePanel.bodyText2"></p> -->
                     <v-row>
-                      <v-col>
+                      <v-col class="html-viewer">
                         <p
                           v-if="lastSelectedLayer && sidebarHtml.layers"
                           v-html="
@@ -155,7 +165,16 @@
                     <div class="body-2" v-for="item in popupInfo" :key="item.property">
                       <span
                         v-if="!hiddenProps.includes(item.property) && !['null', '---'].includes(item.value)"
-                        v-html="`<strong>${mapPopupPropName(item, popup.activeLayer)}: </strong>` + item.value"
+                        v-html="
+                          `<strong>${mapPopupPropName(
+                            item,
+                            popup.activeLayer,
+                            translations && translations[$i18n.locale] && translations[$i18n.locale]['keys']
+                          )}: </strong>` +
+                          (translations && translations[$i18n.locale]
+                            ? translations[$i18n.locale][item.property] || item.value
+                            : item.value)
+                        "
                       ></span>
                     </div>
                     <v-divider class="mt-4"></v-divider>
@@ -389,6 +408,7 @@ export default {
     return {
       isIframeLoading: true,
       color: this.$appConfig.app.color.primary,
+      preventSidebarScroll: false, // Add this flag
     };
   },
   created() {
@@ -405,6 +425,30 @@ export default {
         this.editPost(this.popup.activeFeature);
       }
     });
+    EventBus.$on('scrollSidePanelTop', () => {
+      if (!this.preventSidebarScroll) {
+        const scrollEl = this.$refs.vs;
+        if (scrollEl && scrollEl.scrollTo) {
+          scrollEl.scrollTo({y: 0}, 100, 'easeInQuad');
+        }
+      }
+    });
+  },
+  mounted() {
+    document.addEventListener(
+      'click',
+      e => {
+        if (e.target.closest('.map-link')) {
+          // Update the flag instead of preventing the default action
+          this.preventSidebarScroll = true;
+          // Reset the flag after a short delay to allow for normal operations afterwards
+          setTimeout(() => {
+            this.preventSidebarScroll = false;
+          }, 100); // Adjust the timeout as needed based on your application's behavior
+        }
+      },
+      false
+    );
   },
   computed: {
     isFeatureGetInfo() {
@@ -483,6 +527,7 @@ export default {
       map: 'map',
       activeLayerGroup: 'activeLayerGroup',
       popupInfo: 'popupInfo',
+      translations: 'translations',
       splittedEntities: 'splittedEntities',
       isEditingLayer: 'isEditingLayer',
       isEditingPost: 'isEditingPost',
@@ -622,7 +667,7 @@ export default {
             : this.popup.activeFeature.getGeometry().getFirstCoordinate();
         this.map.getView().animate({
           center,
-          zoom: 15.5,
+          zoom: 13,
           duration: 800,
         });
       }
@@ -720,5 +765,10 @@ export default {
   font-size: 2em;
   margin-block-start: 0.67em;
   margin-block-end: 0.67em;
+}
+
+.html-viewer >>> p:empty::before {
+  content: '';
+  display: inline-block;
 }
 </style>

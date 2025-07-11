@@ -17,10 +17,12 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import ImageWMS from 'ol/source/ImageWMS';
 import LayerGroup from 'ol/layer/Group';
+import Cluster from 'ol/source/Cluster';
 import {Image as ImageLayer} from 'ol/layer';
 import XyzSource from 'ol/source/XYZ';
+import {applyStyle} from 'ol-mapbox-style';
 import {OlStyleFactory} from './OlStyle';
-import {styleRefs, layersStylePropFn} from '../style/OlStyleDefs';
+import {styleRefs, layersStylePropFn, colorMapFn} from '../style/OlStyleDefs';
 import http from '../services/http';
 
 /**
@@ -94,10 +96,16 @@ export const LayerFactory = {
     if ((stylePropFnRef && !styleRef) || label) {
       styleRef = 'baseStyle';
     }
+    if (styleRef === 'htmlLayerStyle') {
+      return styleRefs.htmlLayerStyle();
+    }
+    if (styleRef === 'popupInfoStyle') {
+      return styleRefs.popupInfoStyle();
+    }
     if (!stylePropFnRef) {
       stylePropFnRef = {};
     }
-    if ((styleProps && styleRef && stylePropFnRef && styleRefs[styleRef]) || label) {
+    if ((styleProps && styleRef && Object.keys(stylePropFnRef).length > 0 && styleRefs[styleRef]) || label) {
       // Get style function reference (default is baseStyle)
       const styleFn = styleRefs[styleRef];
       // Get the functions of the layer
@@ -114,17 +122,14 @@ export const LayerFactory = {
           stylePropFn[fnName] = fn;
         }
       });
+      // Overwrite fillColor if colorMapStyle is set
+      if (stylePropFnRef.fillColorFn === 'colorMapStyle') {
+        stylePropFn.fillColor = colorMapFn(layerName);
+      }
       const props = {...styleProps, ...stylePropFn, layerName};
       return styleFn(props, layerName);
     }
-    if (styleRef) {
-      // Edge case for colormap palete
-      if (styleRef === 'colorMapStyle') {
-        return styleRefs[styleRef](layerName, styleProps.colorField, styleProps.colormap);
-      }
-      return styleRefs[styleRef](layerName);
-    }
-    // Just a generic style
+
     return OlStyleFactory.getInstance(styleProps);
   },
 
@@ -170,6 +175,9 @@ export const LayerFactory = {
     }
     if (lConf.type === 'ESRI') {
       return this.createESRIFeatureService(lConf);
+    }
+    if (lConf.type === 'OLMS') {
+      return this.createMapboxStyleLayer(lConf);
     }
     if (lConf.type === 'GROUP') {
       return this.createGroupLayer(lConf, zIndex);
@@ -286,6 +294,35 @@ export const LayerFactory = {
     return xyzLayer;
   },
 
+  /** Returns an ol-mapbox-style layer instance
+   * @param {Object} lConf Layer config object
+   * @return {ol.layer.Tile} OL Mapbox Style layer instance
+   */
+
+  createMapboxStyleLayer(lConf) {
+    const layer = new VectorTileLayer({
+      name: lConf.name,
+      title: lConf.title,
+      lid: lConf.lid,
+      visible: lConf.visible,
+      opacity: lConf.opacity,
+      group: lConf.group,
+      displayInLegend: lConf.displayInLegend,
+      displaySidebarInfo: lConf.displaySidebarInfo,
+      sidebarDefaultMedia: lConf.sidebarDefaultMedia,
+      legendIcon: lConf.legendIcon,
+      legendDisplayName: lConf.legendDisplayName,
+      seriesDisplayName: lConf.seriesDisplayName,
+      hoverable: false,
+      isInteractive: false,
+      declutter: true,
+    });
+    applyStyle(layer, lConf.url, {
+      accessToken: lConf.accessToken,
+    });
+    return layer;
+  },
+
   /**
    * Returns an OpenLayers OSM layer instance due to given config.
    *
@@ -398,7 +435,7 @@ export const LayerFactory = {
       attributions: lConf.attributions,
     };
     // Check if url is a WFS service
-    if (lConf.url.includes('wfs?service=WFS&')) {
+    if (lConf.url && lConf.url.includes('wfs?service=WFS&')) {
       // eslint-disable-next-line func-names
       url = function (extent) {
         return `${lConf.url}&bbox=${extent.join(',')},EPSG:3857`;
@@ -408,6 +445,16 @@ export const LayerFactory = {
       url = lConf.url;
     }
     sourceConfig.url = url;
+    let source = new VectorSource(sourceConfig);
+
+    if (lConf.style.cluster) {
+      const clusterOptions = lConf.style.cluster.options || {};
+      source = new Cluster({
+        distance: clusterOptions.distance || 20,
+        minDistance: clusterOptions.minDistance || 0,
+        source,
+      });
+    }
 
     const vectorLayer = new VectorLayer({
       type: lConf.type,
@@ -433,7 +480,7 @@ export const LayerFactory = {
       opacity: lConf.opacity,
       zIndex: lConf.zIndex,
       group: lConf.group,
-      source: new VectorSource(sourceConfig),
+      source,
       style: this.getStyles(lConf),
       hoverable: lConf.hoverable,
       hoverAttribute: lConf.hoverAttribute,
@@ -546,9 +593,16 @@ export const LayerFactory = {
     const layersConfig = lConf.layers;
     if (Array.isArray(layersConfig)) {
       layersConfig.forEach((layerConfig, index) => {
-        const layer = this.getInstance(layerConfig);
-        if (zIndex) {
-          layer.setZIndex(zIndex + index);
+        let layer;
+        if (Array.isArray(layerConfig.layers)) {
+          // If the layerConfig has layers, it's a group - create a nested group
+          layer = this.createGroupLayer(layerConfig, zIndex);
+        } else {
+          // It's a single layer
+          layer = this.getInstance(layerConfig);
+          if (zIndex) {
+            layer.setZIndex(zIndex + index);
+          }
         }
         layers.push(layer);
         if (lConf.displaySeries) {
@@ -578,7 +632,11 @@ export const LayerFactory = {
       zIndex: lConf.zIndex,
       group: lConf.group,
       displaySeries: lConf.displaySeries,
+      playInterval: lConf.playInterval,
+      largeSlider: lConf.largeSlider,
+      isPlayDisabled: lConf.isPlayDisabled,
       defaultSeriesLayerIndex: lConf.defaultSeriesLayerIndex,
+      playButton: lConf.playButton,
       activeLayerIndex: lConf.defaultSeriesLayerIndex || 0, // Used for layer series title in legend which is updated on layer change
       layers,
     });

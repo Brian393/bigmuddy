@@ -28,7 +28,8 @@
     "group": "Grupo",
     "replaceAndDelete": "Substituir e Apagar",
     "warning": "Advertência",
-    "map": "Mapa"
+    "map": "Mapa",
+    "all": "Todos"
   },
   "tooltip": {
     "zoomIn": "Zoom In",
@@ -42,7 +43,8 @@
     "modifyAttributes": "Modificar Atributos",
     "deleteFeature": "Apagar Característica",
     "addPost": "Adicionar Post",
-    "changeSpotlight": "pressione ↑ ou ↓ para mudar o tamanho dos holofotes"
+    "changeSpotlight": "pressione ↑ ou ↓ para mudar o tamanho dos holofotes",
+    "translateAllFeatures": "Traduzir todos os recursos"
   },
   "form": {
     "user": {
@@ -223,5 +225,10 @@
       "am": "AM",
       "pm": "PM"
     }
+  },
+  "translation": {
+    "translateLoadingText": "Está traduzindo...",
+    "translateAllFeaturesSuccess": "Traduzido com sucesso",
+    "translateAllFeaturesError": "Erro ao traduzir"
   }
 }

@@ -87,6 +87,15 @@ export function getRoutes(config) {
           scope: 'admin_user',
         },
       },
+      {
+        path: 'database',
+        name: 'admin.database',
+        component: () => import('../components/dashboard/Database.vue'),
+        meta: {
+          requiresAuth: true,
+          scope: 'admin_user',
+        },
+      },
     ],
   });
   return routes;

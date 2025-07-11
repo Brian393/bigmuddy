@@ -6,7 +6,9 @@
     "defaultLanguage": "en",
     "color": {
       "primary": "#00000e",
-      "secondary": "#00000e"
+      "secondary": "#00000e",
+      "link": "#429823",
+      "mapLink": "#7C2CA3"
     },
     "font": {
       "url": "https://fonts.googleapis.com/css2?family=Merriweather&display=swap",
@@ -22,13 +24,16 @@
     },
     "sideBar": {
       "isVisible": true,
-      "backgroundColor": "#ffffff",
-      "textColor": "black"
+      "backgroundColor": "#3f2398",
+      "textColor": "#f1f2f3"
     },
     "navbar": {
       "dropdownMenu": false
     },
-    "customNavigationScheme": "1"
+    "customNavigationScheme": "1",
+    "spotlightMessage": {
+      "isVisible": false
+    }
   },
   "map": {
     "projectionCode": "EPSG:3857",
@@ -489,8 +494,6 @@
         "legendIcon": "icons/PermitsLegendIcon.png",
         "style": {
           "type": "circle",
-          "hoverTextColor": "white",
-          "hoverBackgroundColor": "#000000",
           "stylePropFnRef": {
             "circleRadiusFn": "variable1",
             "fillColor": "variable2"
@@ -521,6 +524,56 @@
           "hoverTextColor": "white",
           "hoverBackgroundColor": "#000000"
         }
+      },
+      {
+        "type": "VECTORTILE",
+        "name": "burnables",
+        "url": "./geoserver/gwc/service/tms/1.0.0/workspace1:burnables3@EPSG%3A900913@pbf/{z}/{x}/{-y}.pbf",
+        "group": "data",
+        "queryable": true,
+        "displayInLegend": true,
+        "legendDisplayName": {
+          "en": "Global Power",
+          "es": "Poder global",
+          "pt": "Poder global"
+        },
+        "format": "MVT",
+        "renderMode": "hybrid",
+        "visible": true,
+        "zIndex": 100,
+        "minResolution": 1,
+        "maxResolution": 64000,
+        "hoverable": true,
+        "style": {
+          "hoverTextColor": "white",
+          "hoverBackgroundColor": "black",
+          "type": "circle",
+          "stylePropFnRef": {
+            "radius": "variable2",
+            "fillColor": "variable2",
+            "fillColorFn": "colorMapStyle",
+            "fillColorMap": "jet"
+          },
+          "strokeColor": "#ffffff",
+          "strokeWidth": 0.4
+        }
+      },
+      {
+        "type": "XYZ",
+        "name": "satellite_image",
+        "group": "media",
+        "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "minResolution": 0.25,
+        "maxResolution": 64000,
+        "queryable": false,
+        "displayInLegend": true,
+        "legendIcon": "https://crystal-demo.s3.us-east-2.amazonaws.com/assets/icons/satellite.png",
+        "legendDisplayName": {
+          "en": "Satellite image",
+          "es": "Imagen satélital",
+          "pt": "Imagem de satélite"
+        },
+        "visible": true
       },
       {
         "type": "XYZ",
@@ -642,6 +695,31 @@
         "minResolution": 0.25,
         "maxResolution": 40,
         "queryable": false,
+        "displayInLegend": true,
+        "legendIcon": "https://crystal-demo.s3.us-east-2.amazonaws.com/assets/icons/satellite.png",
+        "legendDisplayName": {
+          "en": "Spotlight",
+          "es": "Foco satélital",
+          "pt": "Foco satelital"
+        },
+        "visible": true
+      },
+      {
+        "type": "XYZ",
+        "name": "ESRI-World-Imagery3",
+        "group": "data",
+        "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "minResolution": 0.25,
+        "maxResolution": 2,
+        "opacity": 1,
+        "queryable": false,
+        "displayInLegend": true,
+        "legendIcon": "https://crystal-demo.s3.us-east-2.amazonaws.com/assets/icons/satellite.png",
+        "legendDisplayName": {
+          "en": "Spotlight",
+          "es": "Foco satélital",
+          "pt": "Foco satelital"
+        },
         "visible": true
       },
       {

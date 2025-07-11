@@ -1,7 +1,7 @@
 <template>
   <v-card width="100%" class="elevation-0 pb-0">
     <v-list class="pa-0 ma-0" v-show="postFeature && !postFeature.get('icon')">
-      <v-list-item v-for="icon in postIcons" :key="icon.title" @click="openHtmlEditor(icon)">
+      <v-list-item v-for="(icon, index) in postIcons" :key="index" @click="openHtmlEditor(icon)">
         <v-list-item-avatar>
           <v-img :src="icon.iconUrl" max-height="50" contain></v-img>
         </v-list-item-avatar>
@@ -245,7 +245,10 @@ export default {
               state: true,
             });
           }, 50);
-          this.persistentLayers.html_posts.getSource().refresh();
+          const htmlPostLayer = this.layers.html_posts;
+          if (htmlPostLayer) {
+            htmlPostLayer.getSource().refresh();
+          }
         });
     },
     transactHtml(type) {
@@ -332,7 +335,7 @@ export default {
       lastSelectedLayer: 'lastSelectedLayer',
     }),
     ...mapGetters('map', {
-      persistentLayers: 'persistentLayers',
+      layers: 'layers',
       activeLayerGroup: 'activeLayerGroup',
       groupName: 'groupName',
     }),
