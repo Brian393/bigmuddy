@@ -33,6 +33,10 @@
     "customNavigationScheme": "1",
     "spotlightMessage": {
       "isVisible": false
+    },
+    "analysis": {
+      "rShinyServerUrl": "https://flows.rivertoday.org/aquifer",
+      "zoomToFeatureOnSelect": false
     }
   },
   "map": {

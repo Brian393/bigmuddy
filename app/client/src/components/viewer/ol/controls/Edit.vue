@@ -75,6 +75,7 @@
         <span>{{ isEditingPost ? $t('general.close') : $t('tooltip.addPost') }}</span>
       </v-tooltip>
     </div>
+
     <div v-if="selectedLayer">
       <div v-for="(item, index) in editButtons" :key="index">
         <v-layout>
@@ -344,6 +345,7 @@ import Feature from 'ol/Feature';
 import RenderFeature from 'ol/render/Feature';
 import {LineString, MultiLineString, Polygon, MultiPolygon} from 'ol/geom';
 import {Modify, Draw} from 'ol/interaction';
+
 import {unByKey} from 'ol/Observable';
 import Overlay from 'ol/Overlay';
 import {mapFields} from 'vuex-map-fields';
@@ -378,6 +380,7 @@ export default {
     color: {type: Object},
   },
   data: () => ({
+    //
     dialogSelectedLayer: null, // Temporary selection (not active if user doesn't press ok)
     layersDialog: false,
     // INTERACTION
@@ -437,6 +440,8 @@ export default {
       selectedLayer: 'selectedLayer',
       postFeature: 'postFeature',
       postEditType: 'postEditType',
+      analysisEditType: 'analysisEditType',
+      analysisIframeUrl: 'analysisIframeUrl',
       formValid: 'formValid',
       formSchema: 'formSchema',
       // formSchemaCache: 'formSchemaCache',
@@ -1121,6 +1126,25 @@ export default {
       if (this.pointerMoveKey) {
         unByKey(this.pointerMoveKey);
       }
+    },
+
+    zoomToFeature(feature) {
+      const geometry = feature.getGeometry();
+      if (!geometry) return;
+      const extent = geometry.getExtent();
+      const padding = 0.1;
+      const width = extent[2] - extent[0];
+      const height = extent[3] - extent[1];
+      const paddedExtent = [
+        extent[0] - width * padding,
+        extent[1] - height * padding,
+        extent[2] + width * padding,
+        extent[3] + height * padding,
+      ];
+      this.map.getView().fit(paddedExtent, {
+        duration: 500,
+        padding: [20, 20, 20, 20], // Additional padding in pixels
+      });
     },
 
     /**

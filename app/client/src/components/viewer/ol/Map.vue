@@ -19,6 +19,8 @@
       ></share-map>
       <!-- Show only on mobile -->
       <locate v-if="$appConfig.app.controls && $appConfig.app.controls.locate_me" :color="color.primary" :map="map" />
+    </div>
+    <div style="position: absolute; left: 50%; bottom: 10px; z-index: 10">
       <route-controls
         v-show="!isEditingPost"
         v-if="!$vuetify.breakpoint.smAndDown"
@@ -29,9 +31,18 @@
       />
     </div>
 
-    <!-- Edit Controls (Only available for logged users which aren't guests ) -->
-    <div v-if="loggedUser" style="position: absolute; right: 20px; top: 10px">
-      <edit :map="map" :color="{primary: color.primary, activeButton: color.secondary}" />
+    <!-- Edit & Analysis Controls -->
+    <div style="position: absolute; right: 20px; top: 10px">
+      <!-- Edit Controls (Only available for logged users which aren't guests ) -->
+      <div v-if="loggedUser">
+        <edit :map="map" :color="{primary: color.primary, activeButton: color.secondary}" />
+      </div>
+      <!-- Analysis Control (Always visible unless editing) -->
+      <div
+        v-if="!selectedLayer && !isEditingPost && $appConfig.app.analysis && $appConfig.app.analysis.rShinyServerUrl"
+      >
+        <analysis :map="map" :color="color.primary" />
+      </div>
     </div>
     <div
       v-if="$vuetify.breakpoint.smAndDown"
@@ -194,6 +205,7 @@ import Edit from './controls/Edit.vue';
 import ShareMap from './controls/ShareMap.vue';
 import AddPost from './controls/AddPost.vue';
 import EditGuide from './controls/EditGuide.vue';
+import Analysis from './controls/Analysis.vue';
 // Interactions
 
 // Ol controls
@@ -231,6 +243,7 @@ export default {
     'progress-loader': ProgressLoader,
     edit: Edit,
     'edit-guide': EditGuide, // mobile bottom info alerts
+    analysis: Analysis,
     Snackbar,
   },
   name: 'app-ol-map',
@@ -702,9 +715,10 @@ export default {
         if (evt.dragging || this.activeInteractions.length > 0) {
           return;
         }
+
         let feature;
         let layer;
-        if (this.isEditingLayer === false && this.isEditingPost === false) {
+        if (this.isEditingLayer === false && this.isEditingPost === false && !this.analysisEditType) {
           this.map.forEachFeatureAtPixel(
             evt.pixel,
             (f, l) => {
@@ -846,10 +860,7 @@ export default {
       const map = me.map;
 
       me.mapClickListenerKey = map.on('click', async evt => {
-        if (me.activeInteractions.length > 0) {
-          return;
-        }
-        if (me.isEditingLayer) {
+        if (me.activeInteractions.length > 0 || me.analysisEditType || me.isEditingLayer) {
           return;
         }
 
@@ -1364,6 +1375,7 @@ export default {
       selectedCoorpNetworkEntity: 'selectedCoorpNetworkEntity',
       currentResolution: 'currentResolution',
       lastSelectedLayer: 'lastSelectedLayer',
+      analysisEditType: 'analysisEditType',
     }),
     hiddenProps() {
       const hiddenProps = this.$appConfig.map.featureInfoHiddenProps;

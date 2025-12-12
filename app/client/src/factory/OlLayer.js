@@ -485,6 +485,8 @@ export const LayerFactory = {
       hoverable: lConf.hoverable,
       hoverAttribute: lConf.hoverAttribute,
       label: lConf.label,
+      presetLayer: lConf.presetLayer,
+      presetLayerName: lConf.presetLayerName,
       styleObj: JSON.stringify(lConf.style),
     });
     return vectorLayer;
@@ -527,6 +529,8 @@ export const LayerFactory = {
       style: this.getStyles(lConf),
       hoverable: lConf.hoverable,
       hoverAttribute: lConf.hoverAttribute,
+      presetLayer: lConf.presetLayer,
+      presetLayerName: lConf.presetLayerName,
       styleObj: JSON.stringify(lConf.style),
     });
 
