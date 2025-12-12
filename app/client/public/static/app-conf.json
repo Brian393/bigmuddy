@@ -50,6 +50,27 @@
     "maxResolution": 64000,
     "layers": [
       {
+        "type": "VECTOR",
+        "name": "html_posts",
+        "url": "./geoserver/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=workspace1:html_posts&outputFormat=application/json&srsname=EPSG:3857",
+        "queryable": true,
+        "displayInLegend": true,
+        "legendDisplayName": "River journals",
+        "format": "GeoJSON",
+        "visible": true,
+        "zIndex": 1002,
+        "minResolution": 0.1,
+        "maxResolution": 64000,
+        "label": null,
+        "hoverable": true,
+        "canEdit": false,
+        "style": {
+          "styleRef": "htmlLayerStyle",
+          "hoverTextColor": "white",
+          "hoverBackgroundColor": "#000000"
+        }
+      },
+      {
         "type": "GROUP",
         "name": "indigenous_territories",
         "legendIcon": "https://bigmudddy.s3.us-east-2.amazonaws.com/assets/icons/legend_indigenous.png",
@@ -280,12 +301,11 @@
         "url": "https://bigmudddy.s3.us-east-2.amazonaws.com/assets/tiles/dogtooth_circle/{z}/{x}/{y}.png",
         "displayInLegend": true,
         "legendDisplayName": "Dogtooth Bend",
-        "visible": false,
+        "visible": true,
         "displaySidebarInfo": true,
         "legendIcon": "https://bigmudddy.s3.us-east-2.amazonaws.com/assets/images/legend_dogtooth.png",
         "opacity": 0.99,
-        "queryable": false,
-        "visible": true
+        "queryable": false
       },
       {
         "type": "GROUP",
@@ -774,6 +794,7 @@
             "ag_system",
             "dogtooth_circle",
             "cancer_alley",
+            "html_posts",
             "videos",
             "labels"
           ],
